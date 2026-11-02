@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#14532d">
+<title>أولاد عبد الحق | المبيعات</title>
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+:root{font-family:Tahoma,Arial,sans-serif;color:#17211b;background:#f4f7f4}
+*{box-sizing:border-box}body{margin:0}.top{background:#14532d;color:white;padding:18px 16px}
+.top h1{font-size:22px;margin:0 0 5px}.top p{margin:0;font-size:13px;opacity:.9}
+main{max-width:900px;margin:auto;padding:14px}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+button,.tab{border:0;border-radius:9px;padding:11px 14px;background:#e1e9e2;color:#164329;font-weight:bold;cursor:pointer}
+button.primary{background:#166534;color:white}.tab.active{background:#166534;color:white}
+.panel{background:white;border:1px solid #dce5dd;border-radius:12px;padding:15px;margin-bottom:14px}
+h2{font-size:18px;margin:0 0 12px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px}
+label{font-size:13px;color:#405347;display:block;margin-bottom:5px}
+input,select{width:100%;padding:11px;border:1px solid #cbd7cd;border-radius:8px;font:inherit;background:white}
+.field{margin-bottom:10px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:9px 6px;border-bottom:1px solid #e6ece7;text-align:right}
+.muted{color:#65746a;font-size:13px}.total{font-size:22px;font-weight:bold;color:#14532d}
+.hidden{display:none}.notice{background:#fff8db;border:1px solid #f0dfa0;padding:10px;border-radius:8px;font-size:13px}
+@media(max-width:520px){main{padding:10px}.panel{padding:12px}table{font-size:12px}}
+</style>
+</head>
+<body>
+<header class="top"><h1>أولاد عبد الحق</h1><p>برنامج المبيعات — جملة وقطاعي</p></header>
+<main>
+<div class="notice">نسخة أولية تعمل على هذا الجهاز دون إنترنت. البيانات محفوظة محلياً على نفس المتصفح.</div>
+<nav class="tabs" style="margin-top:14px">
+<button class="tab active" data-tab="sale">فاتورة بيع</button>
+<button class="tab" data-tab="products">الأصناف</button>
+<button class="tab" data-tab="customers">العملاء</button>
+<button class="tab" data-tab="reports">التقارير</button>
+</nav>
+<section id="sale" class="panel">
+<h2>فاتورة بيع جديدة</h2>
+<div class="grid">
+<div class="field"><label>نوع البيع</label><select id="saleType"><option>قطاعي</option><option>جملة</option></select></div>
+<div class="field"><label>العميل</label><input id="saleCustomer" placeholder="عميل نقدي أو اسم العميل"></div>
+<div class="field"><label>طريقة الدفع</label><select id="payment"><option>نقدي</option><option>آجل</option></select></div>
+</div>
+<div class="grid">
+<div class="field"><label>باركود / اسم الصنف</label><input id="itemSearch" placeholder="اكتب اسم الصنف أو الباركود"></div>
+<div class="field"><label>الكمية</label><input id="qty" type="number" min="1" value="1"></div>
+</div>
+<div class="actions"><button class="primary" id="addLine">إضافة للفاتورة</button><button id="clearCart">تفريغ الفاتورة</button></div>
+<table style="margin-top:12px"><thead><tr><th>الصنف</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th></tr></thead><tbody id="cartRows"><tr><td colspan="4" class="muted">لا توجد أصناف في الفاتورة</td></tr></tbody></table>
+<p>الإجمالي: <span class="total" id="cartTotal">0.00</span> جنيه</p>
+<div class="actions"><button class="primary" id="saveSale">حفظ الفاتورة</button><button id="printSale">طباعة</button></div>
+</section>
+<section id="products" class="panel hidden">
+<h2>إضافة صنف</h2>
+<div class="grid">
+<div class="field"><label>اسم الصنف</label><input id="pName" placeholder="مثال: سكر"></div>
+<div class="field"><label>الباركود</label><input id="pBarcode" placeholder="الباركود"></div>
+<div class="field"><label>سعر القطاعي</label><input id="pRetail" type="number" min="0" step=".01"></div>
+<div class="field"><label>سعر الجملة</label><input id="pWholesale" type="number" min="0" step=".01"></div>
+<div class="field"><label>الرصيد الافتتاحي</label><input id="pStock" type="number" min="0" value="0"></div>
+</div>
+<button class="primary" id="saveProduct">حفظ الصنف</button>
+<table style="margin-top:12px"><thead><tr><th>الصنف</th><th>الباركود</th><th>قطاعي</th><th>جملة</th><th>الرصيد</th></tr></thead><tbody id="productRows"></tbody></table>
+</section>
+<section id="customers" class="panel hidden">
+<h2>إضافة عميل</h2><div class="grid">
+<div class="field"><label>اسم العميل</label><input id="cName"></div><div class="field"><label>رقم الهاتف</label><input id="cPhone"></div>
+</div><button class="primary" id="saveCustomer">حفظ العميل</button><ul id="customerRows"></ul>
+</section>
+<section id="reports" class="panel hidden">
+<h2>ملخص المبيعات</h2><p>عدد الفواتير: <b id="invoiceCount">0</b></p><p>إجمالي المبيعات: <b id="salesSum">0.00</b> جنيه</p>
+<p class="muted">هذه تقارير مبسطة للنسخة الأولية.</p>
+<button id="exportData">تصدير نسخة احتياطية من البيانات</button>
+</section>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const read=(k,d)=>JSON.parse(localStorage.getItem(k)||JSON.stringify(d));
+let products=read('products',[]), customers=read('customers',[]), invoices=read('invoices',[]), cart=[];
+const persist=()=>{localStorage.setItem('products',JSON.stringify(products));localStorage.setItem('customers',JSON.stringify(customers));localStorage.setItem('invoices',JSON.stringify(invoices));};
+function renderProducts(){$('productRows').innerHTML=products.map(p=>`<tr><td>${esc(p.name)}</td><td>${esc(p.barcode)}</td><td>${p.retail}</td><td>${p.wholesale}</td><td>${p.stock}</td></tr>`).join('')||'<tr><td colspan="5">لا توجد أصناف بعد</td></tr>'}
+function renderCart(){$('cartRows').innerHTML=cart.map(x=>`<tr><td>${esc(x.name)}</td><td>${x.qty}</td><td>${x.price.toFixed(2)}</td><td>${(x.qty*x.price).toFixed(2)}</td></tr>`).join('')||'<tr><td colspan="4" class="muted">لا توجد أصناف في الفاتورة</td></tr>';$('cartTotal').textContent=cart.reduce((s,x)=>s+x.qty*x.price,0).toFixed(2)}
+function renderReports(){$('invoiceCount').textContent=invoices.length;$('salesSum').textContent=invoices.reduce((s,x)=>s+x.total,0).toFixed(2)}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');['sale','products','customers','reports'].forEach(id=>$(id).classList.toggle('hidden',id!==b.dataset.tab));});
+$('saveProduct').onclick=()=>{let name=$('pName').value.trim();if(!name)return alert('اكتب اسم الصنف');products.push({name,barcode:$('pBarcode').value.trim(),retail:+$('pRetail').value||0,wholesale:+$('pWholesale').value||0,stock:+$('pStock').value||0});persist();renderProducts();['pName','pBarcode','pRetail','pWholesale'].forEach(id=>$(id).value='');$('pStock').value=0;};
+$('addLine').onclick=()=>{let q=$('itemSearch').value.trim(),p=products.find(x=>x.barcode===q||x.name===q);if(!p)return alert('الصنف غير موجود. أضفه أولاً من صفحة الأصناف.');let qty=+$('qty').value||1,price=$('saleType').value==='جملة'?p.wholesale:p.retail;cart.push({name:p.name,qty,price});renderCart();$('itemSearch').value='';$('qty').value=1;};
+$('clearCart').onclick=()=>{cart=[];renderCart()};
+$('saveSale').onclick=()=>{if(!cart.length)return alert('أضف صنفاً أولاً');let total=cart.reduce((s,x)=>s+x.qty*x.price,0);invoices.push({date:new Date().toISOString(),customer:$('saleCustomer').value||'عميل نقدي',type:$('saleType').value,payment:$('payment').value,items:cart,total});persist();cart=[];renderCart();renderReports();alert('تم حفظ الفاتورة على هذا الجهاز');};
+$('printSale').onclick=()=>window.print();
+$('saveCustomer').onclick=()=>{let name=$('cName').value.trim();if(!name)return alert('اكتب اسم العميل');customers.push({name,phone:$('cPhone').value.trim()});persist();$('customerRows').innerHTML=customers.map(c=>`<li>${esc(c.name)} — ${esc(c.phone)}</li>`).join('');$('cName').value='';$('cPhone').value='';};
+$('exportData').onclick=()=>{let blob=new Blob([JSON.stringify({products,customers,invoices},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='awlad-abdelhak-backup.json';a.click();URL.revokeObjectURL(a.href)};
+renderProducts();renderCart();renderReports();
+if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js');
+</script>
+</body></html>
